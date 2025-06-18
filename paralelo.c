@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 4  // tamanho da matriz (NxN)
+#define N 4 
 
 void imprimirMatriz(int mat[N][N]) {
     for (int i = 0; i < N; i++) {
@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-   // Inicialização das matrizes no processo 0
     if (rank == 0) {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
@@ -39,16 +38,11 @@ int main(int argc, char *argv[]) {
             }
     }
 
-    // Broadcast da matriz B
     MPI_Bcast(B, N*N, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // Scatter de linhas da matriz A
     MPI_Scatter(A, N, MPI_INT, local_A, N, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // Tempo de início (depois do Scatter)
     double start_time = MPI_Wtime();
-
-    // Cálculo de uma linha da matriz C
     int local_C[N];
     for (int j = 0; j < N; j++) {
         local_C[j] = 0;
@@ -60,13 +54,9 @@ int main(int argc, char *argv[]) {
     double end_time = MPI_Wtime();
     double local_duration = end_time - start_time;
 
-    // Gather das linhas calculadas
     MPI_Gather(local_C, N, MPI_INT, C, N, MPI_INT, 0, MPI_COMM_WORLD);
-    // Obter o tempo máximo entre os processos
     double max_duration;
     MPI_Reduce(&local_duration, &max_duration, 1, MPI_DOUBLE, MPI_MAX, 0, MPI>
-
-    // Apenas o processo 0 imprime o resultado
     if (rank == 0) {
         printf("Resultado da multiplicação (MPI):\n");
         imprimirMatriz(C);
