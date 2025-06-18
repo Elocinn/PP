@@ -27,11 +27,10 @@ void imprimirMatriz(int M[N][N]) {
 int main() {
     int A[N][N], B[N][N], C[N][N];
 
-    // Inicialização das matrizes
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++) {
             A[i][j] = i + j + 1;
-            B[i][j] = (i == j) ? 1 : 0;  // matriz identidade
+            B[i][j] = (i == j) ? 1 : 0; 
         }
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,13 +61,11 @@ void imprimirMatriz(int M[N][N]) {
 int main() {
     int A[N][N], B[N][N], C[N][N];
 
-    // Inicialização das matrizes
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++) {
             A[i][j] = i + j + 1;
-            B[i][j] = (i == j) ? 1 : 0;  // matriz identidade
+            B[i][j] = (i == j) ? 1 : 0;  
         }
-    // Medir tempo de execução
     clock_t start = clock();
 
     multiplicarMatrizes(A, B, C);
