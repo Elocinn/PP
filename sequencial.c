@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-// Função para multiplicar matrizes
 void multiplicarMatrizes(int **A, int **B, int **C, int N) {
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++) {
@@ -12,7 +11,6 @@ void multiplicarMatrizes(int **A, int **B, int **C, int N) {
         }
 }
 
-// Função para imprimir uma matriz
 void imprimirMatriz(int **M, int N) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -29,7 +27,6 @@ int main() {
     fflush(stdout);
     scanf("%d", &N);
 
-    // Alocar memória para as matrizes
     int **A = malloc(N * sizeof(int *));
     int **B = malloc(N * sizeof(int *));
     int **C = malloc(N * sizeof(int *));
@@ -39,14 +36,12 @@ int main() {
         C[i] = malloc(N * sizeof(int));
     }
 
-    // Inicialização das matrizes
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++) {
             A[i][j] = i + j + 1;
-            B[i][j] = (i == j) ? 1 : 0;  // matriz identidade
+            B[i][j] = (i == j) ? 1 : 0; 
         }
 
-    // Medir tempo de execução
     clock_t start = clock();
 
     multiplicarMatrizes(A, B, C, N);
@@ -58,10 +53,7 @@ int main() {
     imprimirMatriz(C, N);
 
     printf("Tempo de execução (sequencial): %.6f segundos\n", tempo_execucao);
-    double eficiencia = tempo_execucao / 4.0;
-    printf("Eficiência (sequencial): %.6f\n", eficiencia);
 
-    // Liberar memória
     for (int i = 0; i < N; i++) {
         free(A[i]);
         free(B[i]);
