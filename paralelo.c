@@ -92,10 +92,6 @@ int main(int argc, char **argv) {
             MPI_Recv(&C[proc_offset * N], proc_rows * N, MPI_INT, proc, 1, MPI_COMM_WORLD, &status);
         }
 
-        printf("\nMatriz A:\n");
-        printMatrix(A, N);
-        printf("Matriz B:\n");
-        printMatrix(B, N);
         printf("Resultado (Matriz C = A x B):\n");
         printMatrix(C, N);
         printf("Tempo total: %.6f segundos\n", end - start);
