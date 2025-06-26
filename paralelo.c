@@ -55,8 +55,6 @@ int main(int argc, char **argv) {
     if (rank == 0) {
         A = (int *)malloc(N * N * sizeof(int));
         C = (int *)malloc(N * N * sizeof(int));
-
-        // Inicializa A com i + j + 1 e B como matriz identidade
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 A[i * N + j] = i + j + 1;
@@ -64,13 +62,11 @@ int main(int argc, char **argv) {
             }
         }
 
-        // Envia partes da matriz A para os outros processos
         for (int proc = 1; proc < size; proc++) {
             int proc_rows = rows_per_proc + (proc < remainder ? 1 : 0);
             int proc_offset = proc * rows_per_proc + (proc < remainder ? proc : remainder);
             MPI_Send(&A[proc_offset * N], proc_rows * N, MPI_INT, proc, 0, MPI_COMM_WORLD);
         }
-
         for (int i = 0; i < local_rows * N; i++) {
             local_A[i] = A[i];
         }
