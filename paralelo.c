@@ -44,10 +44,10 @@ int main(int argc, char **argv) {
 
     int rows_per_proc = N / size;
     int remainder = N % size;
-
     int local_rows = rows_per_proc + (rank < remainder ? 1 : 0);
     int offset = rank * rows_per_proc + (rank < remainder ? rank : remainder);
 
+    // Alocação das matrizes locais e da matriz B
     int *local_A = (int *)malloc(local_rows * N * sizeof(int));
     int *local_C = (int *)malloc(local_rows * N * sizeof(int));
     B = (int *)malloc(N * N * sizeof(int));
@@ -56,14 +56,18 @@ int main(int argc, char **argv) {
         A = (int *)malloc(N * N * sizeof(int));
         C = (int *)malloc(N * N * sizeof(int));
 
-        srand(time(NULL));
-        for (int i = 0; i < N * N; i++) {
-            A[i] = rand() % 10;
-            B[i] = rand() % 10;
+        // Inicializa A com i + j + 1 e B como matriz identidade
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                A[i * N + j] = i + j + 1;
+                B[i * N + j] = (i == j) ? 1 : 0;
+            }
+        }
+
+        // Envia partes da matriz A para os outros processos
         for (int proc = 1; proc < size; proc++) {
             int proc_rows = rows_per_proc + (proc < remainder ? 1 : 0);
             int proc_offset = proc * rows_per_proc + (proc < remainder ? proc : remainder);
-
             MPI_Send(&A[proc_offset * N], proc_rows * N, MPI_INT, proc, 0, MPI_COMM_WORLD);
         }
 
@@ -77,15 +81,14 @@ int main(int argc, char **argv) {
     MPI_Bcast(B, N * N, MPI_INT, 0, MPI_COMM_WORLD);
 
     double start = MPI_Wtime();
-
     multiply(local_A, B, local_C, local_rows, N);
-
     double end = MPI_Wtime();
 
     if (rank == 0) {
         for (int i = 0; i < local_rows * N; i++) {
             C[i] = local_C[i];
         }
+
         for (int proc = 1; proc < size; proc++) {
             int proc_rows = rows_per_proc + (proc < remainder ? 1 : 0);
             int proc_offset = proc * rows_per_proc + (proc < remainder ? proc : remainder);
@@ -110,5 +113,3 @@ int main(int argc, char **argv) {
     MPI_Finalize();
     return 0;
 }
-
-
